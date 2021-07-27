@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import itertools
+import seaborn as sns
 import dowhy
 import statsmodels.formula.api as smf
 from sklearn.ensemble import GradientBoostingClassifier
@@ -47,6 +48,24 @@ X = np.append(col_names, 'tz')
 y = 'severity_covid_death'
 gb_model = GradientBoostingClassifier()
 gb_model.fit(train[X], train[y])
-
 gb_model.score(test[X], test[y])
 
+
+def pred_elasticity(m, df, t="tz"):
+    return df.assign(**{
+        "pred_elast": m.predict(df.assign(**{t:df[t]+1})) - m.predict(df)
+    })
+
+pred_elas = pred_elasticity(reg_model, test)
+
+bands_df = pred_elas.assign(
+    elast_band = pd.qcut(pred_elas["pred_elast"], 2),
+    pred_death = reg_model.predict(pred_elas),
+    pred_band = pd.qcut(reg_model.predict(pred_elas), 2),
+)
+
+bands_df
+
+g = sns.FacetGrid(bands_df, col="elast_band")
+g.map_dataframe(sns.regplot, x="tz", y="severity_covid_death")
+g.set_titles(col_template="Elast. Band {col_name}");
