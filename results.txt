@@ -1,0 +1,316 @@
+
+
+### Estimand : 1
+Estimand name: backdoor1 (Default)
+Estimand expression:
+     d                                  
+────────────(Expectation(outcome|x2,x1))
+d[trazodone]                            
+Estimand assumption 1, Unconfoundedness: If U→{trazodone} and U→outcome then P(outcome|trazodone,x2,x1,U) = P(outcome|trazodone,x2,x1)
+
+### Estimand : 2
+Estimand name: backdoor2
+Estimand expression:
+     d                               
+────────────(Expectation(outcome|x2))
+d[trazodone]                         
+Estimand assumption 1, Unconfoundedness: If U→{trazodone} and U→outcome then P(outcome|trazodone,x2,U) = P(outcome|trazodone,x2)
+
+### Estimand : 3
+Estimand name: backdoor3
+Estimand expression:
+     d                               
+────────────(Expectation(outcome|x1))
+d[trazodone]                         
+Estimand assumption 1, Unconfoundedness: If U→{trazodone} and U→outcome then P(outcome|trazodone,x1,U) = P(outcome|trazodone,x1)
+
+### Estimand : 4
+Estimand name: backdoor4
+Estimand expression:
+     d                            
+────────────(Expectation(outcome))
+d[trazodone]                      
+Estimand assumption 1, Unconfoundedness: If U→{trazodone} and U→outcome then P(outcome|trazodone,,U) = P(outcome|trazodone,)
+
+### Estimand : 5
+Estimand name: iv
+No such variable found!
+
+### Estimand : 6
+Estimand name: frontdoor
+No such variable found!
+
+########################################
+Method: propensity_score_stratification PC: 2
+########################################
+*** Causal Estimate ***
+
+## Identified estimand
+Estimand type: nonparametric-ate
+
+## Realized estimand
+b: outcome~trazodone+x1+x2
+Target units: ate
+
+## Estimate
+Mean value: -0.21285062065218632
+p-value: [0, 0.001]
+95.0% confidence interval: (-0.2379676410539343, -0.1880211388683359)
+
+
+#####################################
+Method: Linear Regression, PC:2 
+##################################
+
+## Identified estimand
+Estimand type: nonparametric-ate
+
+## Realized estimand
+b: outcome~trazodone+x1+x2+trazodone*x1+trazodone*x2
+Target units: ate
+
+## Estimate
+Mean value: -0.18564127742406922
+p-value: [2.27679399e-76]
+95.0% confidence interval: [[-0.20528049 -0.16600206]]
+### Conditional Estimates
+__categorical__x1  __categorical__x2
+(-0.987, -0.817]   (-3.336, -0.355]    -0.242905
+                   (-0.355, -0.172]    -0.245893
+                   (-0.172, 0.0207]    -0.242250
+                   (0.0207, 0.366]     -0.238828
+                   (0.366, 5.394]      -0.233333
+(-0.817, -0.566]   (-3.336, -0.355]    -0.233365
+                   (-0.355, -0.172]    -0.234329
+                   (-0.172, 0.0207]    -0.232547
+                   (0.0207, 0.366]     -0.226881
+                   (0.366, 5.394]      -0.218490
+(-0.566, -0.146]   (-3.336, -0.355]    -0.215604
+                   (-0.355, -0.172]    -0.212797
+                   (-0.172, 0.0207]    -0.210710
+                   (0.0207, 0.366]     -0.208216
+                   (0.366, 5.394]      -0.198423
+(-0.146, 0.609]    (-3.336, -0.355]    -0.182647
+                   (-0.355, -0.172]    -0.178481
+                   (-0.172, 0.0207]    -0.175418
+                   (0.0207, 0.366]     -0.171820
+                   (0.366, 5.394]      -0.161567
+(0.609, 9.088]     (-3.336, -0.355]    -0.078374
+                   (-0.355, -0.172]    -0.086566
+                   (-0.172, 0.0207]    -0.084507
+                   (0.0207, 0.366]     -0.083518
+                   (0.366, 5.394]      -0.058371
+dtype: float64
+
+
+######################################################
+Method: Linear Regression, PC: 10
+###################################################
+### Estimand : 1
+Estimand name: backdoor
+Estimand expression:
+     d                                                          
+────────────(Expectation(outcome|x7,x0,x1,x4,x6,x5,x2,x3,x9,x8))
+d[trazodone]                                                    
+Estimand assumption 1, Unconfoundedness: If U→{trazodone} and U→outcome then P(outcome|trazodone,x7,x0,x1,x4,x6,x5,x2,x3,x9,x8,U) = P(outcome|trazodone,x7,x0,x1,x4,x6,x5,x2,x3,x9,x8)
+
+## Realized estimand
+b: outcome~trazodone+x7+x0+x1+x4+x6+x5+x2+x3+x9+x8+trazodone*x7+trazodone*x0+trazodone*x1+trazodone*x4+trazodone*x6+trazodone*x5+trazodone*x2+trazodone*x3+trazodone*x9+trazodone*x8
+Target units: ate
+
+## Estimate
+Mean value: -0.2028640654733681
+p-value: [3.86775096e-83]
+95.0% confidence interval: [[-0.22340852 -0.18231961]]
+### Conditional Estimates
+__categorical__x7              __categorical__x0  __categorical__x1  __categorical__x4  __categorical__x6  __categorical__x5  __categorical__x2  __categorical__x3  __categorical__x9             __categorical__x8
+(-2.0109999999999997, -0.253]  (-0.987, -0.817]   (-0.355, -0.172]   (-0.0112, 0.172]   (-0.288, -0.0353]  (0.0503, 0.214]    (0.0972, 0.224]    (-0.101, -0.0189]  (0.0274, 0.218]               (-0.0596, 0.0429]   -0.274781
+                                                                                        (-0.0353, 0.0908]  (-0.236, -0.0188]  (-0.0381, 0.0972]  (-0.101, -0.0189]  (-0.22, -0.0502]              (-0.0596, 0.0429]   -0.274003
+                                                                     (0.172, 0.282]     (-0.288, -0.0353]  (-0.0188, 0.0503]  (-0.0381, 0.0972]  (-0.101, -0.0189]  (-0.22, -0.0502]              (-0.0596, 0.0429]   -0.276112
+                                                                                        (-0.0353, 0.0908]  (-0.236, -0.0188]  (-0.0381, 0.0972]  (-0.101, -0.0189]  (-0.22, -0.0502]              (-0.0596, 0.0429]   -0.275588
+                                                  (-0.172, 0.0207]   (-0.342, -0.0112]  (-0.0353, 0.0908]  (0.0503, 0.214]    (0.224, 4.593]     (-0.277, -0.101]   (-0.0502, 0.0274]             (0.0429, 0.249]     -0.258196
+                                                                                                                                                                                                                         ...   
+(0.25, 2.077]                  (0.609, 9.088]     (0.366, 5.395]     (0.282, 3.021]     (0.232, 3.041]     (0.214, 2.997]     (0.224, 4.593]     (-2.495, -0.277]   (0.218, 2.477]                (0.249, 2.538]       0.059937
+                                                                                                                                                 (-0.277, -0.101]   (-2.0149999999999997, -0.22]  (-0.245, -0.0596]   -0.188212
+                                                                                                                                                                    (-0.22, -0.0502]              (0.249, 2.538]      -0.063177
+                                                                                                                                                                    (0.0274, 0.218]               (0.249, 2.538]       0.083539
+
+################################################
+Method: propensity_score_stratification, PC: 10
+################################################
+### Estimand : 1
+Estimand name: backdoor
+Estimand expression:
+     d                                                          
+────────────(Expectation(outcome|x7,x0,x1,x4,x6,x5,x2,x3,x9,x8))
+d[trazodone]                                                    
+Estimand assumption 1, Unconfoundedness: If U→{trazodone} and U→outcome then P(outcome|trazodone,x7,x0,x1,x4,x6,x5,x2,x3,x9,x8,U) = P(outcome|trazodone,x7,x0,x1,x4,x6,x5,x2,x3,x9,x8)
+
+## Realized estimand
+b: outcome~trazodone+x7+x0+x1+x4+x6+x5+x2+x3+x9+x8
+Target units: ate
+
+## Estimate
+Mean value: -0.23588863317051167
+p-value: [0, 0.001]
+95.0% confidence interval: (-0.25998703090354663, -0.2012475815115343)      
+
+
+##########################################################
+Propensity Score Matching
+##########################################################
+
+T = 'any_anti_depressants'...
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   53.3s finished
+Antidepressant:  trazodone
+Original Sample Size 241952
+Treated Population Sample Size 129430.43755080966
+Untreated Population Sample Size 243455.467535674
+Y1: 0.3490033755347111
+Y0: 0.7018638081629973
+ATE -0.3528604326282929
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   32.2s finished
+Antidepressant:  amitriptyline
+Original Sample Size 241952
+Treated Population Sample Size 116762.29285679325
+Untreated Population Sample Size 241518.64994922036
+Y1: 0.331305894147209
+Y0: 0.6964947916716269
+ATE -0.3651888975244152
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   33.3s finished
+Antidepressant:  fluoxetine
+Original Sample Size 241952
+Treated Population Sample Size 121249.54738315313
+Untreated Population Sample Size 241612.81198865324
+Y1: 0.34246343638117843
+Y0: 0.696415596179143
+ATE -0.35395215979798245
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   35.6s finished
+Antidepressant:  citalopram
+Original Sample Size 241952
+Treated Population Sample Size 119091.08775609228
+Untreated Population Sample Size 241541.8440137056
+Y1: 0.34181729785698506
+Y0: 0.6961294222076371
+ATE -0.3543121243506477
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   23.1s finished
+Antidepressant:  paroxetine
+Original Sample Size 241952
+Treated Population Sample Size 89379.40524579954
+Untreated Population Sample Size 241713.63795727585
+Y1: 0.26067361558526225
+Y0: 0.6964745639564172
+ATE -0.43580094837116123
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   32.9s finished
+Antidepressant:  venlafaxine
+Original Sample Size 241952
+Treated Population Sample Size 108387.94257018478
+Untreated Population Sample Size 241544.9079281749
+Y1: 0.31102299616007006
+Y0: 0.6964231944724685
+ATE -0.3854001983123923
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:    8.6s finished
+Antidepressant:  vilazodone
+Original Sample Size 241952
+Treated Population Sample Size 3615.339393194154
+Untreated Population Sample Size 241884.5629695921
+Y1: 0.012992687513434393
+Y0: 0.6968303722167803
+ATE -0.6838376847033518
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   11.1s finished
+Antidepressant:  vortioxetine
+Original Sample Size 241952
+Treated Population Sample Size 17030.214221401555
+Untreated Population Sample Size 241842.80290557194
+Y1: 0.05200192196854069
+Y0: 0.6967942511938832
+ATE -0.644792329225335
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   39.2s finished
+Antidepressant:  sertraline
+Original Sample Size 241952
+Treated Population Sample Size 138714.32304052406
+Untreated Population Sample Size 241721.502535054
+Y1: 0.39827005998700254
+Y0: 0.697032708703049
+ATE -0.2987626487160371
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   34.8s finished
+Antidepressant:  bupropion
+Original Sample Size 241952
+Treated Population Sample Size 127742.30420747343
+Untreated Population Sample Size 241793.46897522444
+Y1: 0.38611707706411214
+Y0: 0.6974207887026181
+ATE -0.31130371163850845
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   28.6s finished
+Antidepressant:  mirtazapine
+Original Sample Size 241952
+Treated Population Sample Size 86068.50551423345
+Untreated Population Sample Size 241283.94432093634
+Y1: 0.22815117019671854
+Y0: 0.6965924087290918
+ATE -0.46844123853238484
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   10.3s finished
+Antidepressant:  desvenlafaxine
+Original Sample Size 241952
+Treated Population Sample Size 28481.393695705254
+Untreated Population Sample Size 241836.75555923028
+Y1: 0.09714473112167656
+Y0: 0.6967065836215118
+ATE -0.5995618524998377
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   13.8s finished
+Antidepressant:  doxepin
+Original Sample Size 241952
+Treated Population Sample Size 34447.92105382968
+Untreated Population Sample Size 241766.107710072
+Y1: 0.10791673731974127
+Y0: 0.6966006133424825
+ATE -0.5886838760227318
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   35.1s finished
+Antidepressant:  duloxetine
+Original Sample Size 241952
+Treated Population Sample Size 121356.1244295758
+Untreated Population Sample Size 241414.25870693257
+Y1: 0.3348111929409026
+Y0: 0.6965202668514389
+ATE -0.3617090739105356
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   37.2s finished
+Antidepressant:  escitalopram
+Original Sample Size 241952
+Treated Population Sample Size 128055.6534121376
+Untreated Population Sample Size 241547.24800237012
+Y1: 0.37046108901044467
+Y0: 0.6964359311771364
+ATE -0.3259748421666885
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   20.7s finished
+Antidepressant:  nortriptyline
+Original Sample Size 241952
+Treated Population Sample Size 85562.73344346297
+Untreated Population Sample Size 241622.75403269392
+Y1: 0.23242594182430765
+Y0: 0.6964296697762613
+ATE -0.4640037279519586
+[Parallel(n_jobs=-1)]: Using backend LokyBackend with 32 concurrent workers.
+[Parallel(n_jobs=-1)]: Done   1 out of   1 | elapsed:   46.6s finished
+Antidepressant:  any_anti_depressants
+Original Sample Size 241952
+Treated Population Sample Size 171048.84651683812
+Untreated Population Sample Size 331095.6082175966
+Y1: 0.4815700081656835
+Y0: 0.8845457953063235
+ATE -0.4029757871406551
