@@ -13,9 +13,9 @@ from joblib import Parallel, delayed
 
 def run_ps(df, X_data, T, y):
     # estimate the propensity score
-    ps = LogisticRegression(max_iter=1000 ,C=1e6, n_jobs=1).fit(X_data, df[T]).predict_proba(X_data)[:, 1]
+    ps = LogisticRegression(max_iter=1000 ,C=1e6, n_jobs=-1).fit(X_data, df[T]).predict_proba(X_data)[:, 1]
     weight = (df[T]-ps) / (ps*(1-ps)) # define the weights
-    return np.mean(weight * y) # compute the ATE
+    return np.mean(weight * df[y]) # compute the ATE
 
 df = pd.read_excel("N3C_full_data.xlsx")
 df.drop(columns=[1, '1.1'], inplace=True)
@@ -68,6 +68,7 @@ conditions_matrix_sp = sparse.load_npz('condition_matrix_sparse.npz')
 
 df.age = df.age /df.age.max()
 
+df.drop(columns=['conditions', 'severity_covid_death'], inplace=True)
 
 neg_controls = ['Fracture_of_bone', 'asthma', 'chronic_kidney_disease', 'disorder_of_nail', 'eczema']
 neg_cntrl_snomed_id = [125605004, 195967001, 709044004, 17790008, 43116000]
@@ -95,34 +96,63 @@ neg_cntrl_cond_id = [df_sn2con_dict[x] for x in neg_cntrl_snomed_id]
 
 neg_cntrl_idx = [np.where(np.array(unique_conditions)==x)[0][0] for x in neg_cntrl_cond_id]
 
-outcome = conditions_matrix_sp[:,neg_cntrl_idx[0]].todense().astype(int)
-cols_to_keep = np.delete(np.arange(conditions_matrix_sp.shape[1]), neg_cntrl_idx[0])
-cond_mat_sp_wo_outcome = conditions_matrix_sp[:,cols_to_keep]
+prop_score_mean = pd.DataFrame(columns=anti_depressants)
+prop_score_ci_L = pd.DataFrame(columns=anti_depressants)
+prop_score_ci_U = pd.DataFrame(columns=anti_depressants)
 
-df.drop(columns=['conditions', 'severity_covid_death'], inplace=True)
-categ = ['ethnicity_concept_id', 'gender_concept_id', 'race_concept_id', 'zip']
-cont = ['age']
+for i in tqdm(range(len(neg_cntrl_idx))):
+    outcome = conditions_matrix_sp[:,neg_cntrl_idx[i]].todense().astype(int)
+    cols_to_keep = np.delete(np.arange(conditions_matrix_sp.shape[1]), neg_cntrl_idx[i])
+    cond_mat_sp_wo_outcome = conditions_matrix_sp[:,cols_to_keep]
 
-T = 'any_anti_depressants'
-Y = 'outcome'
-experiments = anti_depressants + ['any_anti_depressants']
-prop_score = pd.DataFrame(columns=['prop_score_w_ate_mean', 'ci_95_l', 'ci_95_h'])
+    
+    categ = ['ethnicity_concept_id', 'gender_concept_id', 'race_concept_id', 'zip']
+    cont = ['age']
 
-data_with_categ = pd.concat([
-    df.drop(columns=categ + [i for i in experiments if i != T]), # dataset without the categorical features
-    pd.get_dummies(df[categ], columns=categ, drop_first=False)# categorical features converted to dummies
-], axis=1)
+    T = 'any_anti_depressants'
+    Y = 'outcome'
+    experiments = anti_depressants + ['any_anti_depressants']
 
-X = data_with_categ.columns.drop([T,Y])
-covariets = sparse.hstack([data_with_categ[X].values, cond_mat_sp_wo_outcome])
 
-np.random.seed(88)
-# run 1000 bootstrap samples
-bootstrap_sample = 100
-ates = Parallel(n_jobs=4)(delayed(run_ps)(data_with_categ.sample(frac=1, replace=True), covariets, T, outcome)
-                        for _ in range(bootstrap_sample))
-ates = np.array(ates)
 
-print(f"ATE: {ates.mean()}")
-print(f"95% C.I.: {(np.percentile(ates, 2.5), np.percentile(ates, 97.5))}")
+    for T in tqdm(experiments):
+
+        data_with_categ = pd.concat([
+            df.drop(columns=categ + [i for i in experiments if i != T]), # dataset without the categorical features
+            pd.get_dummies(df[categ], columns=categ, drop_first=False)# categorical features converted to dummies
+        ], axis=1)
+
+        X = data_with_categ.columns.drop([T,Y])
+        covariets = sparse.hstack([data_with_categ[X].values, cond_mat_sp_wo_outcome])
+        data_with_categ.outcome = outcome
+
+        np.random.seed(88)
+        # run 1000 bootstrap samples
+        bootstrap_sample = 30
+
+        ates = Parallel(n_jobs=-1, verbose=1)(delayed(run_ps)(data_with_categ.sample(frac=1, replace=True), covariets, T, Y)
+                                for _ in range(bootstrap_sample))
+        ates = np.array(ates)
+
+        print(f"ATE: {ates.mean()}")
+        print(f"95% C.I.: {(np.percentile(ates, 2.5), np.percentile(ates, 97.5))}")
+
+        ate_mean = ates.mean()
+        ate_ci_L = np.percentile(ates, 2.5)
+        ate_ci_U = np.percentile(ates, 97.5)
+
+        prop_score_mean.loc[neg_controls[i],T] = ate_mean
+        prop_score_ci_L.loc[neg_controls[i],T] = ate_ci_L
+        prop_score_ci_U.loc[neg_controls[i],T] = ate_ci_U
+
+        prop_score_mean.to_csv('neg_control_results/ate_prop_score_neg_cntl_mean.csv')
+        prop_score_ci_L.to_csv('neg_control_results/ate_prop_score_neg_cntl_ci_L.csv')
+        prop_score_ci_U.to_csv('neg_control_results/ate_prop_score_neg_cntl_ci_U.csv')
 # prop_score.loc[T,['prop_score_w_ate_mean','ci_95_l','ci_95_h']] = ates.mean(), np.percentile(ates, 2.5), np.percentile(ates, 97.5)
+
+
+prop_score_mean.to_csv('neg_control_results/ate_prop_score_neg_cntl_mean.csv')
+prop_score_ci_L.to_csv('neg_control_results/ate_prop_score_neg_cntl_ci_L.csv')
+prop_score_ci_U.to_csv('neg_control_results/ate_prop_score_neg_cntl_ci_U.csv')
+
+

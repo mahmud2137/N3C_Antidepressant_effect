@@ -63,9 +63,9 @@ df.age = df.age /df.age.max()
 # plt.hist(df.query("any_anti_depressants==0")["outcome"], bins=2, alpha=0.3, color="C2", label='untreated')
 # plt.hist(df.query("any_anti_depressants==1")["outcome"], bins=2, alpha=0.3, color="C3", label= 'treated')
 # plt.legend();
-# df1 = df.drop(columns=anti_depressants)
+ 
 
-df
+# df1 = df.drop(columns=anti_depressants)
 
 df.drop(columns=['conditions', 'severity_covid_death'], inplace=True)
 categ = ['ethnicity_concept_id', 'gender_concept_id', 'race_concept_id', 'zip']
