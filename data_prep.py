@@ -24,18 +24,20 @@ ate_pair_L = pd.read_csv('ate_prop_score_pair_ci_L.csv')
 ate_pair_U = pd.read_csv('ate_prop_score_pair_ci_U.csv')
 
 first_ad = ate_pair_mean.columns[2:]
-first_ad[14]
+
 fig, axes = plt.subplots(15,1, figsize = (8,20), sharex=True)
+# sns.set(font_scale=0.8)
+# sns.set_context("paper", rc={"font.size":15,"axes.titlesize":13,"axes.labelsize":12})
 for i in range(15):
     ate_pair_mean['ci'] = ate_pair_U[first_ad[14-i]] - ate_pair_L[first_ad[14-i]]
     sns.barplot(ax=axes[i],data=ate_pair_mean, x='Antidepressants', y=first_ad[14-i], color='blue', alpha = 0.4)
-    axes[i].errorbar(data=ate_pair_mean, x='Antidepressants', y=first_ad[14-i], yerr='ci',ls='', color='black' )
-    axes[i].tick_params(axis='x', labelrotation = 45)
-
-fig.savefig('pairwise_ate.png')
+    axes[i].errorbar(data=ate_pair_mean, x='Antidepressants', y=first_ad[14-i], yerr='ci',ls='', color='black')
+    axes[i].tick_params(axis='x', labelrotation = 45, labelsize=12)
+# sns.set_context("paper", rc={"font.size":8,"axes.titlesize":8,"axes.labelsize":5}) 
+fig.savefig('pairwise_ate.png', dpi=300)
 plt.show()
 
-ate_pair_L
+
 
 ate_pair_L.set_index('Antidepressants', inplace=True)
 ate_pair_U.set_index('Antidepressants', inplace=True)
@@ -45,10 +47,12 @@ mask_nsig = ate_pair_mult <= 0
 
 ate_pair_mean.set_index('Antidepressants', inplace=True)
 #HeatMap
-# ate_pair_mean.drop(columns=['ci'], inplace=True)
+ate_pair_mean.drop(columns=['ci'], inplace=True)
+
 f, ax = plt.subplots(figsize=(12, 10))
 ate_pair_mean.T
 ate_pair_mult
+sns.set(font_scale=1.2)
 sns.heatmap(ate_pair_mean.T, annot=True, fmt=".2f", linewidths=.5, ax=ax,cmap='coolwarm', mask=mask_nsig, annot_kws={"weight": "bold"})
 sns.heatmap(ate_pair_mean.T, mask=mask_sig, cbar=False, annot=True, ax=ax, cmap='coolwarm',vmax=0.65, vmin=-0.65)
 
@@ -81,7 +85,7 @@ for i, n in enumerate(neg_cntls):
     sns.barplot(ax=axes[i],data=ate_neg_ctl_mean, x='Antidepressants', y=n, color='blue', alpha = 0.4)
     axes[i].axhline(0)
     axes[i].errorbar(data=ate_neg_ctl_mean, x='Antidepressants', y=n, yerr='ci',ls='', color='black' )
-    axes[i].tick_params(axis='x', labelrotation = 45)
+    axes[i].tick_params(axis='x', labelrotation = 55)
 
 plt.tight_layout()
 fig.savefig('neg_cntl.png', dpi=300)
